@@ -9,11 +9,46 @@ import java.util.Optional;
 public class NinjaService {
 
     private NinjaRepository ninjaRepository;
+    private NinjaMapper ninjaMapper;
 
-    public NinjaService(NinjaRepository ninjaRepository) {
+    public NinjaService(NinjaRepository ninjaRepository, NinjaMapper ninjaMapper) {
         this.ninjaRepository = ninjaRepository;
+        this.ninjaMapper = ninjaMapper;
     }
 
+    //listar todos os ninjas
+    public List<NinjaModel> listarNinjas() {
+        return ninjaRepository.findAll();
+    }
+
+    //listar todos os ninjas por Id
+    public NinjaModel listarNinjaPorId(Long id) {
+        Optional<NinjaModel> ninjaModel = ninjaRepository.findById(id);
+        return ninjaModel.orElse(null);
+    }
+
+    //Criar um novo ninja
+    public NinjaDTO criarNinja(NinjaDTO ninjaDTO) {
+        NinjaModel ninja = ninjaMapper.map(ninjaDTO);
+        ninja = ninjaRepository.save(ninja);
+        return ninjaMapper.map(ninja);
+    }
+
+    // Deletar o ninja
+    public void deletarNinja(Long id) {
+        ninjaRepository.deleteById(id);
+    }
+
+    // Atualizar ninja
+    public NinjaModel atualizarNinja(Long id, NinjaModel ninjaAtualizado) {
+        if(ninjaRepository.existsById(id)) {
+            ninjaAtualizado.setId(id);
+            return ninjaRepository.save(ninjaAtualizado);
+        }
+        return null;
+    }
+
+    /*
     //listar todos os ninjas
     public List<NinjaModel> listarNinjas() {
         return ninjaRepository.findAll();
@@ -43,4 +78,6 @@ public class NinjaService {
         }
         return null;
     }
+
+    */
 }
